@@ -3,13 +3,15 @@
      data: {
          playerHealth: 100,
          monsterHealth: 100,
-         gameIsRunning: false
+         gameIsRunning: false,
+         turns: []
      },
      methods: {
          startGame: function() {
             this.gameIsRunning = true;
             this.playerHealth = 100;
-            this.monsterHealth = 100;             
+            this.monsterHealth = 100;      
+            this.turns = [];       
          },
          calculateDamage: function(max, min){
             return Math.max(Math.floor(Math.random() * max) + 1, min);
@@ -33,14 +35,23 @@
             return false;
          },
          monsterAttacks() {
-            this.playerHealth -= this.calculateDamage(12, 5);                         
-            
+            var damage = this.calculateDamage(12, 5);                         
+            this.playerHealth -= damage;
+            this.turns.unshift({
+                isPlayer: false,
+                text: 'Monster hits Player for ' + damage
+            });
             if (this.checkWin()) {
                 return;
             }
          },
          attack: function() {
-            this.monsterHealth -= this.calculateDamage(10, 3);
+            var damage = this.calculateDamage(10, 3);
+            this.monsterHealth -= damage;
+            this.turns.unshift({
+                isPlayer: true,
+                text: 'Player hits Monster for ' + damage
+            });
             if (this.checkWin()) {
                 return;
             }
@@ -48,7 +59,13 @@
             this.monsterAttacks();
          },
          specialAttack: function() { //same as attack() but diff damage values
-            this.monsterHealth -= this.calculateDamage(20, 10);    
+            var damage = this.calculateDamage(20, 10); 
+            this.monsterHealth -= damage;
+            
+            this.turns.unshift({
+                isPlayer: true,
+                text: 'Player hits Monster hard for ' + damage
+            });   
             if (this.checkWin()) {
                 return;
             }
@@ -61,8 +78,11 @@
                 this.playerHealth += 10;
             } else {
                 this.playerHealth = 100;
-            }
-
+            }                        
+            this.turns.unshift({
+                isPlayer: true,
+                text: 'Player heals for 10'
+            });   
             this.monsterAttacks();      
          },
          giveUp: function() {
