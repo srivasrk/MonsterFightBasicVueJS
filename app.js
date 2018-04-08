@@ -32,28 +32,41 @@
             } 
             return false;
          },
-         attack: function() {
-            this.monsterHealth -= this.calculateDamage(10, 3);
-
-            if (this.checkWin()) {
-                return;
-            }
-
+         monsterAttacks() {
             this.playerHealth -= this.calculateDamage(12, 5);                         
             
             if (this.checkWin()) {
                 return;
             }
-
          },
-         specialAttack: function() {
+         attack: function() {
+            this.monsterHealth -= this.calculateDamage(10, 3);
+            if (this.checkWin()) {
+                return;
+            }
 
+            this.monsterAttacks();
+         },
+         specialAttack: function() { //same as attack() but diff damage values
+            this.monsterHealth -= this.calculateDamage(20, 10);    
+            if (this.checkWin()) {
+                return;
+            }
+
+            this.monsterAttacks();        
          },
          heal: function() {
+                    
+            if (this.playerHealth <= 90) {
+                this.playerHealth += 10;
+            } else {
+                this.playerHealth = 100;
+            }
 
+            this.monsterAttacks();      
          },
          giveUp: function() {
-
+            this.gameIsRunning = false;
          }
      }
  });
